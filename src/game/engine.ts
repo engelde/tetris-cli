@@ -144,6 +144,16 @@ export function hardDrop(state: GameState): void {
 	const ghostPos = getGhostPosition(state.board, state.currentPiece)
 	const cellsBelow = ghostPos.row - state.currentPiece.position.row
 
+	state.animations.push({
+		id: Math.random().toString(36).substring(7),
+		type: "hardDrop",
+		startTime: Date.now(),
+		duration: 150,
+		column: state.currentPiece.position.col,
+		startRow: state.currentPiece.position.row,
+		endRow: ghostPos.row,
+	})
+
 	state.currentPiece.position.row = ghostPos.row
 	state.score += HARD_DROP_SCORE_PER_CELL * cellsBelow
 
@@ -323,6 +333,15 @@ function lockCurrentPiece(state: GameState): void {
 	if (linesCleared > 0) {
 		state.lines += linesCleared
 
+		// Add clear animation
+		state.animations.push({
+			id: Math.random().toString(36).substring(7),
+			type: "clear",
+			startTime: Date.now(),
+			duration: 200,
+			rows: [...completedLines],
+		})
+
 		// Update combo
 		state.combo = state.combo < 0 ? 0 : state.combo + 1
 
@@ -359,6 +378,10 @@ function lockCurrentPiece(state: GameState): void {
 // Game tick (called every frame)
 export function gameTick(state: GameState, dt: number): void {
 	if (state.isPaused || state.isGameOver) return
+
+	// Clear expired animations
+	const now = Date.now()
+	state.animations = state.animations.filter((a) => now - a.startTime < a.duration)
 
 	// Spawn piece if needed
 	if (!state.currentPiece) {
