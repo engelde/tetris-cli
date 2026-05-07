@@ -1,6 +1,8 @@
 import { playHardDrop, playLineClear, playLock, playTSpin } from "../audio/sound.js"
 import { getEffectiveGravity } from "../config/settings.js"
 import {
+	ANIMATION_DURATION_CLEAR,
+	ANIMATION_DURATION_HARD_DROP,
 	FRAME_TIME,
 	HARD_DROP_SCORE_PER_CELL,
 	LINES_PER_LEVEL,
@@ -37,6 +39,9 @@ import { detectTSpin } from "./tspin.js"
 
 // Gravity accumulator (module-level)
 let gravityAccumulator = 0
+
+// Animation ID counter
+let nextAnimationId = 1
 
 // Create initial game state
 export function createGameState(mode: GameMode, _difficulty: Difficulty): GameState {
@@ -144,15 +149,17 @@ export function hardDrop(state: GameState): void {
 	const ghostPos = getGhostPosition(state.board, state.currentPiece)
 	const cellsBelow = ghostPos.row - state.currentPiece.position.row
 
-	state.animations.push({
-		id: Math.random().toString(36).substring(7),
-		type: "hardDrop",
-		startTime: Date.now(),
-		duration: 150,
-		column: state.currentPiece.position.col,
-		startRow: state.currentPiece.position.row,
-		endRow: ghostPos.row,
-	})
+	if (cellsBelow > 0) {
+		state.animations.push({
+			id: String(nextAnimationId++),
+			type: "hardDrop",
+			startTime: Date.now(),
+			duration: ANIMATION_DURATION_HARD_DROP,
+			column: state.currentPiece.position.col,
+			startRow: state.currentPiece.position.row,
+			endRow: ghostPos.row,
+		})
+	}
 
 	state.currentPiece.position.row = ghostPos.row
 	state.score += HARD_DROP_SCORE_PER_CELL * cellsBelow
@@ -335,10 +342,10 @@ function lockCurrentPiece(state: GameState): void {
 
 		// Add clear animation
 		state.animations.push({
-			id: Math.random().toString(36).substring(7),
+			id: String(nextAnimationId++),
 			type: "clear",
 			startTime: Date.now(),
-			duration: 200,
+			duration: ANIMATION_DURATION_CLEAR,
 			rows: [...completedLines],
 		})
 
