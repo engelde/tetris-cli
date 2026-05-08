@@ -1,53 +1,53 @@
 import chalk from "chalk"
 
-// Piece colors using Chalk (Tetris Guideline colors)
+// Piece colors using Chalk (Tetris Guideline colors, tuned for dark terminals)
 export const PIECE_COLORS = {
-	I: chalk.hex("#00f0f0"), // Cyan
-	O: chalk.hex("#f0f000"), // Yellow
-	T: chalk.hex("#a000f0"), // Magenta
-	S: chalk.hex("#00f000"), // Green
-	Z: chalk.hex("#f00000"), // Red
-	J: chalk.hex("#0000f0"), // Blue
-	L: chalk.hex("#f0a000"), // Orange
+	I: chalk.hex("#12dff3"), // Cyan
+	O: chalk.hex("#ffe15a"), // Yellow
+	T: chalk.hex("#b770ff"), // Violet
+	S: chalk.hex("#4ade80"), // Green
+	Z: chalk.hex("#ff5c7a"), // Red
+	J: chalk.hex("#5b8cff"), // Blue
+	L: chalk.hex("#ffad42"), // Orange
 } as const
 
 // 3D piece colors (light and dark shades for depth effect)
 export const PIECE_3D_COLORS = {
 	I: {
-		light: chalk.hex("#40ffff"), // Bright cyan
-		dark: chalk.hex("#00b0b0"), // Dark cyan
+		light: chalk.hex("#5ef6ff"), // Bright cyan
+		dark: chalk.hex("#0792a3"), // Dark cyan
 	},
 	O: {
-		light: chalk.hex("#ffff40"), // Bright yellow
-		dark: chalk.hex("#b0b000"), // Dark yellow
+		light: chalk.hex("#fff38a"), // Bright yellow
+		dark: chalk.hex("#ad8b00"), // Dark yellow
 	},
 	T: {
-		light: chalk.hex("#d040ff"), // Bright magenta
-		dark: chalk.hex("#7000b0"), // Dark magenta
+		light: chalk.hex("#d9a6ff"), // Bright violet
+		dark: chalk.hex("#7038b8"), // Dark violet
 	},
 	S: {
-		light: chalk.hex("#40ff40"), // Bright green
-		dark: chalk.hex("#00b000"), // Dark green
+		light: chalk.hex("#86efac"), // Bright green
+		dark: chalk.hex("#16803d"), // Dark green
 	},
 	Z: {
-		light: chalk.hex("#ff4040"), // Bright red
-		dark: chalk.hex("#b00000"), // Dark red
+		light: chalk.hex("#ff8fa3"), // Bright red
+		dark: chalk.hex("#b41d3a"), // Dark red
 	},
 	J: {
-		light: chalk.hex("#4040ff"), // Bright blue
-		dark: chalk.hex("#0000b0"), // Dark blue
+		light: chalk.hex("#93b5ff"), // Bright blue
+		dark: chalk.hex("#2444b8"), // Dark blue
 	},
 	L: {
-		light: chalk.hex("#ff9040"), // Bright orange
-		dark: chalk.hex("#b06000"), // Dark orange
+		light: chalk.hex("#ffc47a"), // Bright orange
+		dark: chalk.hex("#b45c00"), // Dark orange
 	},
 } as const
 
 // Ghost piece styling (dimmed)
-export const GHOST_COLOR = chalk.gray
+export const GHOST_COLOR = chalk.hex("#4b6478")
 
 // Garbage block styling
-export const GARBAGE_COLOR = chalk.gray
+export const GARBAGE_COLOR = chalk.hex("#7b8490")
 
 // Block characters
 export const BLOCK_CHAR = "██"
@@ -58,30 +58,35 @@ export const GARBAGE_CHAR_1 = "▒"
 export const GARBAGE_CHAR_2 = "▓"
 export const EMPTY_CHAR = "  "
 
+export const EMPTY_BOARD_CHAR = chalk.hex("#17212b")("· ")
+
 // UI element colors
 export const UI_COLORS = {
 	normal: chalk.white,
-	highlight: chalk.cyan,
-	warning: chalk.yellow,
-	error: chalk.red,
-	success: chalk.green,
+	highlight: chalk.hex("#12dff3"),
+	warning: chalk.hex("#ffe15a"),
+	error: chalk.hex("#ff5c7a"),
+	success: chalk.hex("#4ade80"),
 	dim: chalk.dim,
+	muted: chalk.hex("#6f7f8f"),
+	panelTitle: chalk.hex("#e9f7ff").bold,
+	accent: chalk.hex("#ffad42"),
 } as const
 
 // HUD colors
 export const HUD_COLORS = {
-	score: chalk.yellowBright,
-	level: chalk.greenBright,
-	lines: chalk.cyanBright,
-	label: chalk.white,
+	score: chalk.hex("#ffe15a").bold,
+	level: chalk.hex("#4ade80").bold,
+	lines: chalk.hex("#12dff3").bold,
+	label: chalk.hex("#d8e7f0"),
 	value: chalk.whiteBright,
 } as const
 
 // Special event colors
 export const EVENT_COLORS = {
-	tspin: chalk.magenta,
-	b2b: chalk.yellowBright,
-	combo: chalk.greenBright,
+	tspin: chalk.hex("#d9a6ff").bold,
+	b2b: chalk.hex("#ffe15a").bold,
+	combo: chalk.hex("#4ade80").bold,
 } as const
 
 // Border styling
@@ -114,16 +119,14 @@ export function colorPieceCompact(pieceType: string): string {
 
 // Enhanced ghost with color tint (compact)
 export function colorGhostCompact(pieceType?: string): string {
-	const grayColor = chalk.gray
-
 	if (pieceType) {
 		const colorFn = PIECE_COLORS[pieceType as keyof typeof PIECE_COLORS]
 		if (colorFn) {
-			return colorFn.dim("[ ]")
+			return colorFn.dim(GHOST_CHAR)
 		}
 	}
 
-	return grayColor("[ ]")
+	return GHOST_COLOR(GHOST_CHAR)
 }
 
 // Textured garbage with alternating patterns (compact)

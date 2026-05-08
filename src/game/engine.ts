@@ -1,5 +1,13 @@
-import { playHardDrop, playLineClear, playLock, playTSpin } from "../audio/sound.js"
-import { getEffectiveGravity } from "../config/settings.js"
+import {
+	playB2B,
+	playHardDrop,
+	playLineClear,
+	playLock,
+	playMove,
+	playRotate,
+	playTSpin,
+} from "../audio/sound.js"
+import { DIFFICULTY_CONFIGS, getEffectiveGravity } from "../config/settings.js"
 import {
 	ANIMATION_DURATION_CLEAR,
 	ANIMATION_DURATION_HARD_DROP,
@@ -7,12 +15,15 @@ import {
 	HARD_DROP_SCORE_PER_CELL,
 	LINES_PER_LEVEL,
 	LOCK_DELAY,
+	MAX_LEVEL,
 	MAX_LOCK_RESETS,
+	NEXT_QUEUE_SIZE,
 	SOFT_DROP_SCORE_PER_CELL,
 } from "../utils/constants.js"
 import type {
 	ClearType,
 	Difficulty,
+	GameEvent,
 	GameMode,
 	GameState,
 	InputAction,
@@ -32,32 +43,46 @@ import {
 	movePieceX,
 } from "./board.js"
 import { createPiece, getShapeAtRotation } from "./piece.js"
-import { nextPieceType, resetRandomizer } from "./randomizer.js"
+import { createRandomizerState, nextPieceFromRandomizer } from "./randomizer.js"
 import { calculateScore, isDifficultClear } from "./scoring.js"
 import { getWallKickTests } from "./srs.js"
 import { detectTSpin } from "./tspin.js"
 
-// Gravity accumulator (module-level)
-let gravityAccumulator = 0
-
 // Animation ID counter
 let nextAnimationId = 1
+let nextEventId = 1
+
+type GameEventInput =
+	| {
+			type: "lock"
+			clearType: ClearType
+			linesCleared: number
+			isBackToBack: boolean
+	  }
+	| {
+			type: "topOut"
+	  }
 
 // Create initial game state
 export function createGameState(mode: GameMode, _difficulty: Difficulty): GameState {
-	resetRandomizer()
-
-	const nextQueue = [nextPieceType(), nextPieceType(), nextPieceType()]
+	const randomizer = createRandomizerState()
+	const nextQueue = Array.from({ length: NEXT_QUEUE_SIZE }, () =>
+		nextPieceFromRandomizer(randomizer),
+	)
+	const difficulty = _difficulty
+	const config = DIFFICULTY_CONFIGS[difficulty]
 
 	return {
 		mode,
+		difficulty,
+		randomizer,
 		board: createBoard(),
 		currentPiece: null,
 		nextQueue,
 		holdPiece: null,
 		canHold: true,
 		score: 0,
-		level: 1,
+		level: config.startLevel,
 		lines: 0,
 		combo: -1,
 		lastClearWasDifficult: false,
@@ -65,20 +90,55 @@ export function createGameState(mode: GameMode, _difficulty: Difficulty): GameSt
 		isPaused: false,
 		lockDelay: 0,
 		lockResets: 0,
+		gravityAccumulator: 0,
 		animations: [],
+		events: [],
 		garbageQueue: 0,
 		garbageSent: 0,
 	}
 }
 
+function emitEvent(state: GameState, event: GameEventInput): void {
+	if (event.type === "lock") {
+		state.events.push({
+			id: String(nextEventId++),
+			type: "lock",
+			clearType: event.clearType,
+			linesCleared: event.linesCleared,
+			isBackToBack: event.isBackToBack,
+		})
+		return
+	}
+
+	state.events.push({
+		id: String(nextEventId++),
+		type: "topOut",
+	})
+}
+
+export function drainGameEvents(state: GameState): GameEvent[] {
+	const events = [...state.events]
+	state.events = []
+	return events
+}
+
 // Spawn a new piece at the top of the board
 export function spawnPiece(state: GameState): boolean {
-	const pieceType = state.nextQueue.shift()!
+	while (state.nextQueue.length < NEXT_QUEUE_SIZE) {
+		state.nextQueue.push(nextPieceFromRandomizer(state.randomizer))
+	}
+
+	const pieceType = state.nextQueue.shift()
+	if (!pieceType) {
+		state.isGameOver = true
+		emitEvent(state, { type: "topOut" })
+		return false
+	}
 	const newPiece = createPiece(pieceType)
 
 	// Get next pieces for the queue
-	while (state.nextQueue.length < 3) {
-		state.nextQueue.push(nextPieceType())
+	while (state.nextQueue.length < NEXT_QUEUE_SIZE) {
+		state.nextQueue.push(nextPieceFromRandomizer(state.randomizer))
 	}
 
 	state.currentPiece = newPiece
@@ -105,6 +165,7 @@ export function spawnPiece(state: GameState): boolean {
 
 		if (!spawned) {
 			state.isGameOver = true
+			emitEvent(state, { type: "topOut" })
 			return false
 		}
 	}
@@ -117,6 +178,7 @@ export function moveLeft(state: GameState): boolean {
 	if (!state.currentPiece) return false
 	const moved = movePieceX(state.board, state.currentPiece, -1)
 	if (moved) {
+		playMove()
 		resetLockDelay(state)
 	}
 	return moved
@@ -127,6 +189,7 @@ export function moveRight(state: GameState): boolean {
 	if (!state.currentPiece) return false
 	const moved = movePieceX(state.board, state.currentPiece, 1)
 	if (moved) {
+		playMove()
 		resetLockDelay(state)
 	}
 	return moved
@@ -199,6 +262,7 @@ function rotatePiece(state: GameState, direction: RotationDirection): boolean {
 
 	// Check if valid
 	if (canPlacePiece(state.board, piece)) {
+		playRotate()
 		resetLockDelay(state)
 		return true
 	}
@@ -210,6 +274,7 @@ function rotatePiece(state: GameState, direction: RotationDirection): boolean {
 		piece.position.row += kick.row
 
 		if (canPlacePiece(state.board, piece)) {
+			playRotate()
 			resetLockDelay(state)
 			return true
 		}
@@ -245,6 +310,7 @@ export function holdPiece(state: GameState): boolean {
 		spawnPiece(state)
 	}
 
+	state.canHold = false
 	state.lockDelay = 0
 	state.lockResets = 0
 
@@ -328,12 +394,8 @@ function lockCurrentPiece(state: GameState): void {
 	}
 
 	// Calculate score
-	const scoreEvent = calculateScore(
-		clearType,
-		state.level,
-		state.lastClearWasDifficult && isDifficultClear(clearType),
-		Math.max(0, state.combo),
-	)
+	const isBackToBack = state.lastClearWasDifficult && isDifficultClear(clearType)
+	const scoreEvent = calculateScore(clearType, state.level, isBackToBack, Math.max(0, state.combo))
 
 	state.score += scoreEvent.score
 
@@ -364,8 +426,15 @@ function lockCurrentPiece(state: GameState): void {
 			playTSpin()
 		}
 
-		// Update level
-		state.level = Math.floor(state.lines / LINES_PER_LEVEL) + 1
+		if (isBackToBack && scoreEvent.isB2B) {
+			playB2B()
+		}
+
+		// Update level, preserving difficulty start level.
+		state.level = Math.min(
+			MAX_LEVEL,
+			DIFFICULTY_CONFIGS[state.difficulty].startLevel + Math.floor(state.lines / LINES_PER_LEVEL),
+		)
 	} else {
 		// No lines cleared - reset combo (but T-Spin 0 doesn't break B2B)
 		if (!clearType.includes("tspin-0")) {
@@ -373,9 +442,17 @@ function lockCurrentPiece(state: GameState): void {
 		}
 	}
 
+	emitEvent(state, {
+		type: "lock",
+		clearType,
+		linesCleared,
+		isBackToBack,
+	})
+
 	// Check top-out
 	if (checkTopOut(state.board)) {
 		state.isGameOver = true
+		emitEvent(state, { type: "topOut" })
 	}
 
 	// Spawn next piece
@@ -397,15 +474,15 @@ export function gameTick(state: GameState, dt: number): void {
 	}
 
 	// Apply gravity
-	const gravityFrames = getEffectiveGravity(state.level, "normal")
+	const gravityFrames = getEffectiveGravity(state.level, state.difficulty)
 	const gravityMs = gravityFrames * FRAME_TIME
 	state.lockDelay += dt
 
 	// Natural gravity drop
-	gravityAccumulator += dt
+	state.gravityAccumulator += dt
 
-	while (gravityAccumulator >= gravityMs) {
-		gravityAccumulator -= gravityMs
+	while (state.gravityAccumulator >= gravityMs) {
+		state.gravityAccumulator -= gravityMs
 		if (state.currentPiece) {
 			if (!movePieceDown(state.board, state.currentPiece)) {
 				break
@@ -464,5 +541,6 @@ export function getGhost(state: GameState): { row: number; col: number } | null 
 
 // Reset gravity accumulator (for new game)
 export function resetGravityAccumulator(): void {
-	gravityAccumulator = 0
+	nextAnimationId = 1
+	nextEventId = 1
 }

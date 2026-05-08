@@ -34,6 +34,11 @@ export interface Piece {
 	position: Position // Top-left of the bounding box
 }
 
+export interface RandomizerState {
+	bag: PieceType[]
+	bagIndex: number
+}
+
 // SRS Wall kick test result
 export interface KickResult {
 	offset: Position
@@ -83,9 +88,25 @@ export interface Animation {
 	endRow?: number
 }
 
+// Gameplay events emitted by the engine for modes/UI to consume.
+export type GameEvent =
+	| {
+			id: string
+			type: "lock"
+			clearType: ClearType
+			linesCleared: number
+			isBackToBack: boolean
+	  }
+	| {
+			id: string
+			type: "topOut"
+	  }
+
 // Game state
 export interface GameState {
 	mode: GameMode
+	difficulty: Difficulty
+	randomizer: RandomizerState
 	board: Board
 	currentPiece: Piece | null
 	nextQueue: PieceType[]
@@ -100,12 +121,12 @@ export interface GameState {
 	isPaused: boolean
 	lockDelay: number // Current lock delay elapsed (ms)
 	lockResets: number // Number of lock resets for current piece
+	gravityAccumulator: number
 	animations: Animation[]
+	events: GameEvent[]
 	// Multiplayer
 	garbageQueue: number // Incoming garbage rows
 	garbageSent: number // Total garbage sent to opponent
-	// Internal (not in JSON)
-	oldPiece?: PieceType // Internal: tracks held piece
 }
 
 // Player state (for 2P)
@@ -115,11 +136,11 @@ export interface PlayerState extends GameState {
 
 // CPU difficulty config
 export interface CpuConfig {
-	difficulty: Difficulty
 	randomness: number // 0.0 - 1.0, chance of non-optimal move
-	speedMultiplier: number // Piece placement speed
+	placementSpeed: number // Milliseconds between CPU inputs
 	useTSpins: boolean
 	useFlatHeuristic: boolean
+	lookAhead: number
 }
 
 // Garbage row with hole

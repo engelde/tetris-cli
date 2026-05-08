@@ -12,8 +12,6 @@ export const SPAWN_COL = 3 // Leftmost col for spawn (pieces vary in width)
 export const FRAME_TIME = 1000 / 60 // 60 FPS
 export const LOCK_DELAY = 500 // ms - time before piece locks after touching surface
 export const MAX_LOCK_RESETS = 15 // Max moves/rotates after touch before forced lock
-export const LINE_CLEAR_DELAY = 300 // ms - visual delay before rows vanish
-export const SOFT_DROP_SPEED = 50 // ms per cell when soft dropping
 export const HARD_DROP_SCORE_PER_CELL = 2
 export const SOFT_DROP_SCORE_PER_CELL = 1
 

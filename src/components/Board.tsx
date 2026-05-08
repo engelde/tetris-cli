@@ -1,10 +1,10 @@
-import { Box, Text } from "ink"
 import chalk from "chalk"
+import { Box, Text } from "ink"
 import {
 	colorGarbageCompact,
 	colorGhostCompact,
 	colorPieceCompact,
-	EMPTY_CHAR,
+	EMPTY_BOARD_CHAR,
 } from "../config/colors.js"
 import { getGhostPosition } from "../game/board.js"
 import { getPieceCells } from "../game/piece.js"
@@ -71,18 +71,18 @@ export function Board({ state }: BoardProps) {
 	}
 
 	// Render the board with compact blocks (each row becomes 1 terminal row)
-	const renderedRows: string[] = []
+	const renderedRows: { id: string; content: string }[] = []
 
-	const clearAnims = state.animations?.filter(a => a.type === "clear") || []
-	const hardDropAnims = state.animations?.filter(a => a.type === "hardDrop") || []
+	const clearAnims = state.animations?.filter((a) => a.type === "clear") || []
+	const hardDropAnims = state.animations?.filter((a) => a.type === "hardDrop") || []
 
 	for (let r = 0; r < BOARD_HEIGHT; r++) {
 		// Check if this row has an active clear animation
-		const isRowClearing = clearAnims.some(a => a.rows?.includes(r + BUFFER_ROWS))
-		
+		const isRowClearing = clearAnims.some((a) => a.rows?.includes(r + BUFFER_ROWS))
+
 		if (isRowClearing) {
 			// Render a bright white flash for the whole row
-			renderedRows.push(chalk.bgWhite("  ".repeat(BOARD_WIDTH)))
+			renderedRows.push({ id: `row-${r}`, content: chalk.bgWhite("  ".repeat(BOARD_WIDTH)) })
 			continue
 		}
 
@@ -94,17 +94,21 @@ export function Board({ state }: BoardProps) {
 
 			if (!cell) {
 				// Check for hard drop particle trail
-				const isTrail = hardDropAnims.some(a => 
-					a.startRow !== undefined && a.endRow !== undefined &&
-					a.column !== undefined && 
-					c >= a.column && c <= a.column + 3 && // Rough bounds check for trail width
-					absoluteRow >= a.startRow && absoluteRow <= a.endRow
+				const isTrail = hardDropAnims.some(
+					(a) =>
+						a.startRow !== undefined &&
+						a.endRow !== undefined &&
+						a.column !== undefined &&
+						c >= a.column &&
+						c <= a.column + 3 && // Rough bounds check for trail width
+						absoluteRow >= a.startRow &&
+						absoluteRow <= a.endRow,
 				)
 
 				if (isTrail) {
-					rowArr.push(chalk.dim("· "))
+					rowArr.push(chalk.hex("#5eead4")("│ "))
 				} else {
-					rowArr.push(EMPTY_CHAR)
+					rowArr.push(EMPTY_BOARD_CHAR)
 				}
 			} else if (cell.isGhost) {
 				rowArr.push(colorGhostCompact(cell.type))
@@ -115,15 +119,15 @@ export function Board({ state }: BoardProps) {
 			}
 		}
 
-		renderedRows.push(rowArr.join(""))
+		renderedRows.push({ id: `row-${r}`, content: rowArr.join("") })
 	}
 
 	// Render the board with border
 	return (
-		<Box flexDirection="column" borderStyle="double" borderColor="cyan">
-			{renderedRows.map((row, rowIndex) => (
-				<Box key={`board-row-${rowIndex}`}>
-					<Text>{row}</Text>
+		<Box flexDirection="column" borderStyle="double" borderColor="cyan" paddingX={1}>
+			{renderedRows.map((row) => (
+				<Box key={row.id}>
+					<Text>{row.content}</Text>
 				</Box>
 			))}
 		</Box>

@@ -6,6 +6,8 @@ import type { GameState } from "../utils/types.js"
 // Mock game state
 const mockState: GameState = {
 	mode: "marathon" as const,
+	difficulty: "normal",
+	randomizer: { bag: [], bagIndex: 0 },
 	board: [],
 	currentPiece: null,
 	holdPiece: null,
@@ -20,7 +22,9 @@ const mockState: GameState = {
 	isGameOver: true,
 	lockDelay: 0,
 	lockResets: 0,
+	gravityAccumulator: 0,
 	animations: [],
+	events: [],
 	garbageQueue: 0,
 	garbageSent: 0,
 }
