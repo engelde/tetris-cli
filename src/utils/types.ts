@@ -84,6 +84,7 @@ export interface Animation {
 	rows?: number[]
 	// For hard drop trails:
 	column?: number
+	columns?: number[] // Exact columns occupied by the piece
 	startRow?: number
 	endRow?: number
 }

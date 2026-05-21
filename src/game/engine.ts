@@ -42,7 +42,7 @@ import {
 	movePieceDown,
 	movePieceX,
 } from "./board.js"
-import { createPiece, getShapeAtRotation } from "./piece.js"
+import { createPiece, getPieceCells, getShapeAtRotation } from "./piece.js"
 import { createRandomizerState, nextPieceFromRandomizer } from "./randomizer.js"
 import { calculateScore, isDifficultClear } from "./scoring.js"
 import { getWallKickTests } from "./srs.js"
@@ -213,12 +213,15 @@ export function hardDrop(state: GameState): void {
 	const cellsBelow = ghostPos.row - state.currentPiece.position.row
 
 	if (cellsBelow > 0) {
+		const pieceCells = getPieceCells(state.currentPiece)
+		const columns = [...new Set(pieceCells.map((cell) => cell.col))]
 		state.animations.push({
 			id: String(nextAnimationId++),
 			type: "hardDrop",
 			startTime: Date.now(),
 			duration: ANIMATION_DURATION_HARD_DROP,
 			column: state.currentPiece.position.col,
+			columns,
 			startRow: state.currentPiece.position.row,
 			endRow: ghostPos.row,
 		})

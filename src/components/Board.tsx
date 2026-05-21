@@ -98,11 +98,9 @@ export function Board({ state }: BoardProps) {
 					(a) =>
 						a.startRow !== undefined &&
 						a.endRow !== undefined &&
-						a.column !== undefined &&
-						c >= a.column &&
-						c <= a.column + 3 && // Rough bounds check for trail width
 						absoluteRow >= a.startRow &&
-						absoluteRow <= a.endRow,
+						absoluteRow <= a.endRow &&
+						a.columns?.includes(c),
 				)
 
 				if (isTrail) {

@@ -19,6 +19,7 @@ describe("Animations", () => {
 		assert.equal(state.animations.length, 1)
 		assert.equal(state.animations[0].type, "hardDrop")
 		assert.equal(state.animations[0].column, 4)
+		assert.deepEqual(state.animations[0].columns, [4, 5, 6])
 	})
 
 	it("adds a clear animation when lines are cleared", () => {
@@ -50,6 +51,7 @@ describe("Animations", () => {
 			startTime: Date.now() - 1000,
 			duration: 150,
 			column: 0,
+			columns: [0, 1, 2, 3],
 			startRow: 0,
 			endRow: 20,
 		})
