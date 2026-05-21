@@ -13,12 +13,14 @@ export function useTerminalSize(): TerminalSize {
 
 	useEffect(() => {
 		const onResize = () => {
-			setSize({
+			const next: TerminalSize = {
 				columns: process.stdout.columns || 80,
 				rows: process.stdout.rows || 24,
-			})
+			}
+			setSize((prev) => (prev.columns === next.columns && prev.rows === next.rows ? prev : next))
 		}
 
+		// Some terminals only emit one of these; dedupe via setSize bail-out
 		process.stdout.on("resize", onResize)
 		process.on("SIGWINCH", onResize)
 		return () => {
