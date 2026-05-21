@@ -1,6 +1,7 @@
 import { Box, Text, useApp, useInput } from "ink"
 import { useState } from "react"
 import { HUD_COLORS, UI_COLORS } from "../config/colors.js"
+import { useTerminalSize } from "../hooks/useTerminalSize.js"
 import type { Difficulty } from "../utils/types.js"
 
 interface MenuChoice {
@@ -17,6 +18,7 @@ interface MenuProps {
 
 export function Menu({ onSelect, onQuit, bestScore = 0 }: MenuProps) {
 	const { exit } = useApp()
+	const size = useTerminalSize()
 	const [selectedMode, setSelectedMode] = useState(0)
 	const [selectedDifficulty, setSelectedDifficulty] = useState(1) // Normal
 	const [soundEnabled, setSoundEnabled] = useState(true)
@@ -77,10 +79,17 @@ export function Menu({ onSelect, onQuit, bestScore = 0 }: MenuProps) {
 	})
 
 	return (
-		<Box flexDirection="column" padding={2} alignItems="center">
-			<Box marginBottom={2} flexDirection="column" alignItems="center">
-				<Text bold color="cyan">
-					{`
+		<Box
+			width={size.columns || 80}
+			height={size.rows || 24}
+			flexDirection="column"
+			justifyContent="center"
+			alignItems="center"
+		>
+			<Box flexDirection="column" padding={2} alignItems="center">
+				<Box marginBottom={2} flexDirection="column" alignItems="center">
+					<Text bold color="cyan">
+						{`
 ████████╗███████╗████████╗██████╗ ██╗███████╗
 ╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝
    ██║   █████╗     ██║   ██████╔╝██║███████╗
@@ -88,90 +97,94 @@ export function Menu({ onSelect, onQuit, bestScore = 0 }: MenuProps) {
    ██║   ███████╗   ██║   ██║  ██║██║███████║
    ╚═╝   ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚══════╝
 					`.trim()}
-				</Text>
-				<Text bold color="yellow">
-					C L I E D I T I O N
-				</Text>
-				<Text color="green">
-					{UI_COLORS.dim("Best Marathon: ")}
-					{HUD_COLORS.score(bestScore.toString())}
-				</Text>
-				<Text>{UI_COLORS.muted("Arcade Tetris for the terminal")}</Text>
-			</Box>
+					</Text>
+					<Text bold color="yellow">
+						C L I E D I T I O N
+					</Text>
+					<Text color="green">
+						{UI_COLORS.dim("Best Marathon: ")}
+						{HUD_COLORS.score(bestScore.toString())}
+					</Text>
+					<Text>{UI_COLORS.muted("Arcade Tetris for the terminal")}</Text>
+				</Box>
 
-			<Box
-				borderStyle="double"
-				borderColor="cyan"
-				paddingX={3}
-				paddingY={1}
-				flexDirection="column"
-				width={48}
-			>
-				{screen === "mode" ? (
-					<>
-						<Box marginBottom={1} justifyContent="center">
-							<Text>{HUD_COLORS.label("SELECT GAME MODE")}</Text>
-						</Box>
-						<Box flexDirection="column" marginBottom={1}>
-							{modes.map((mode, idx) => (
-								<Text key={mode.mode} color={selectedMode === idx ? "green" : "white"}>
-									{selectedMode === idx ? "▶ " : "  "}
-									{mode.label.padEnd(10)}
-									{UI_COLORS.dim(mode.description)}
+				<Box
+					borderStyle="double"
+					borderColor="cyan"
+					paddingX={3}
+					paddingY={1}
+					flexDirection="column"
+					width={48}
+				>
+					{screen === "mode" ? (
+						<>
+							<Box marginBottom={1} justifyContent="center">
+								<Text>{HUD_COLORS.label("SELECT GAME MODE")}</Text>
+							</Box>
+							<Box flexDirection="column" marginBottom={1}>
+								{modes.map((mode, idx) => (
+									<Text key={mode.mode} color={selectedMode === idx ? "green" : "white"}>
+										{selectedMode === idx ? "▶ " : "  "}
+										{mode.label.padEnd(10)}
+										{UI_COLORS.dim(mode.description)}
+									</Text>
+								))}
+							</Box>
+
+							<Box marginTop={1} justifyContent="center">
+								<Text>
+									{UI_COLORS.normal("Sound: ")}
+									{soundEnabled ? HUD_COLORS.score("ON") : UI_COLORS.dim("OFF")}
 								</Text>
-							))}
-						</Box>
+							</Box>
+						</>
+					) : (
+						<>
+							<Box marginBottom={1} justifyContent="center">
+								<Text>{HUD_COLORS.label("SELECT DIFFICULTY")}</Text>
+							</Box>
+							<Box flexDirection="column" alignItems="center" marginBottom={1}>
+								{difficulties.map((difficulty, idx) => (
+									<Text
+										key={difficulty.value}
+										color={selectedDifficulty === idx ? "green" : "white"}
+									>
+										{selectedDifficulty === idx ? "▶ " : "  "}
+										{difficulty.label}
+									</Text>
+								))}
+							</Box>
+						</>
+					)}
+				</Box>
 
-						<Box marginTop={1} justifyContent="center">
-							<Text>
-								{UI_COLORS.normal("Sound: ")}
-								{soundEnabled ? HUD_COLORS.score("ON") : UI_COLORS.dim("OFF")}
-							</Text>
+				<Box
+					marginTop={2}
+					borderStyle="single"
+					borderColor="gray"
+					paddingX={3}
+					paddingY={1}
+					flexDirection="column"
+					alignItems="center"
+				>
+					<Text bold color="white">
+						CONTROLS
+					</Text>
+					{screen === "mode" ? (
+						<Box flexDirection="column" alignItems="center" marginTop={1}>
+							<Text>{UI_COLORS.dim("↑/↓ or W/S: Navigate")}</Text>
+							<Text>{UI_COLORS.dim("Enter/Space: Select")}</Text>
+							<Text>{UI_COLORS.dim("T: Toggle Sound")}</Text>
+							<Text>{UI_COLORS.dim("Q: Quit")}</Text>
 						</Box>
-					</>
-				) : (
-					<>
-						<Box marginBottom={1} justifyContent="center">
-							<Text>{HUD_COLORS.label("SELECT DIFFICULTY")}</Text>
+					) : (
+						<Box flexDirection="column" alignItems="center" marginTop={1}>
+							<Text>{UI_COLORS.dim("↑/↓ or W/S: Navigate")}</Text>
+							<Text>{UI_COLORS.dim("Enter/Space: Start Game")}</Text>
+							<Text>{UI_COLORS.dim("Esc: Back")}</Text>
 						</Box>
-						<Box flexDirection="column" alignItems="center" marginBottom={1}>
-							{difficulties.map((difficulty, idx) => (
-								<Text key={difficulty.value} color={selectedDifficulty === idx ? "green" : "white"}>
-									{selectedDifficulty === idx ? "▶ " : "  "}
-									{difficulty.label}
-								</Text>
-							))}
-						</Box>
-					</>
-				)}
-			</Box>
-
-			<Box
-				marginTop={2}
-				borderStyle="single"
-				borderColor="gray"
-				paddingX={3}
-				paddingY={1}
-				flexDirection="column"
-				alignItems="center"
-			>
-				<Text bold color="white">
-					CONTROLS
-				</Text>
-				{screen === "mode" ? (
-					<Box flexDirection="column" alignItems="center" marginTop={1}>
-						<Text>{UI_COLORS.dim("↑/↓ or W/S: Navigate")}</Text>
-						<Text>{UI_COLORS.dim("Enter/Space: Select")}</Text>
-						<Text>{UI_COLORS.dim("T: Toggle Sound")}</Text>
-						<Text>{UI_COLORS.dim("Q: Quit")}</Text>
-					</Box>
-				) : (
-					<Box flexDirection="column" alignItems="center" marginTop={1}>
-						<Text>{UI_COLORS.dim("↑/↓ or W/S: Navigate")}</Text>
-						<Text>{UI_COLORS.dim("Enter/Space: Start Game")}</Text>
-						<Text>{UI_COLORS.dim("Esc: Back")}</Text>
-					</Box>
-				)}
+					)}
+				</Box>
 			</Box>
 		</Box>
 	)
