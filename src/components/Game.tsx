@@ -34,7 +34,7 @@ export function Game({ state, isHighScore = false }: GameProps) {
 
 	return (
 		<Box width={size.columns} height={size.rows} justifyContent="center" alignItems="center">
-			<Box flexDirection="column" alignItems="center">
+			<Box flexDirection="column" alignItems="center" justifyContent="center">
 				<Box marginBottom={0}>
 					<Text>
 						{UI_COLORS.highlight("TETRIS CLI")}

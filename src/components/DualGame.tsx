@@ -46,7 +46,7 @@ export function DualGame({
 
 	return (
 		<Box width={size.columns} height={size.rows} justifyContent="center" alignItems="center">
-			<Box flexDirection="column" alignItems="center">
+			<Box flexDirection="column" alignItems="center" justifyContent="center">
 				{/* Header with player labels */}
 				<Box width="100%" justifyContent="center">
 					<Text>
