@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- Release automation with release-please and npm publish
+- SIGWINCH fallback for terminal resize detection
+- Pro tips and credits to README
+
+### Fixed
+- Menu now fills terminal and centers vertically
+- Game and dual-game layouts center properly in large terminals
+- Hard-drop trail bounds now use exact piece columns
+- Garbage queue returns remaining rows when buffer is full
+
 ## 1.0.0
 
 - Modernized the terminal UI around a compact Ink layout.
