@@ -1,47 +1,80 @@
-# tetris-cli
+<div align="center">
 
-A polished Tetris game for the terminal, built with TypeScript, React, and Ink.
+<pre>
+████████╗███████╗████████╗██████╗ ██╗███████╗
+╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝
+   ██║   █████╗     ██║   ██████╔╝██║███████╗
+   ██║   ██╔══╝     ██║   █╔══██╗██║╚════██║
+   ██║   ███████╗   ██║   ██║  ██║██║███████║
+   ╚═╝   ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚══════╝
+</pre>
 
-`tetris-cli` includes Marathon, vs CPU, and same-keyboard 2-player modes with SRS rotation, hold, ghost pieces, next queue, garbage attacks, local high scores, and a compact arcade-style terminal UI.
+**A faithful CLI recreation of Tetris — right in your terminal.** 🎮
 
-## Quick Start
+[![npm version](https://img.shields.io/npm/v/tetris-cli?color=black&label=npm&style=flat-square)](https://www.npmjs.com/package/tetris-cli)
+[![license](https://img.shields.io/npm/l/tetris-cli?color=black&style=flat-square)](LICENSE)
+[![node](https://img.shields.io/node/v/tetris-cli?color=black&style=flat-square)](package.json)
+
+<pre>
+╔══════════╗ ╔══════════════════════╗ ╔════════════╗
+║ HOLD     ║ ║ · · · ██████· · · ·  ║ ║ NEXT       ║
+║          ║ ║ · · · · · · · · · ·  ║ ║   ██       ║
+╚══════════╝ ║ · · · · · · · · · ·  ║ ║ ██████     ║
+      A/D move · · · · · · · · · ·  ║ ║   ████     ║
+       K/Z J/X · · · · · · · · · ·  ║ ╚════════════╝
+       H/C hold · · · · · · · · · ·  ║
+             · · · · · · · · · ·  ║ ╔════════════╗
+             · · · · · · · · · ·  ║ ║ STATS      ║
+             · · · · · · · · · ·  ║ ║ SC       0 ║
+             · · · · · · · · · ·  ║ ║ LV       1 ║
+             · · · · · · · · · ·  ║ ║ LN       0 ║
+             · · · · · · · · · ·  ║ ║ [      ]   ║
+             · · · · · · · · · ·  ║ ╚════════════╝
+             · · · · · · · · · ·  ║
+             · · · · · · · · · ·  ║ S soft
+             · · · · · .. · · · · ║ W/Sp hard
+             · · · ······· · · · ·║ P pause/Q quit
+             ╚══════════════════════╝
+</pre>
+
+*"The classic puzzle game, rebuilt for the terminal."*
+
+</div>
+
+## 🚀 Quick Start
 
 ```bash
 npx tetris-cli
 ```
 
-Install globally if you want the `tetris` command available everywhere:
+One command. No install. Just play.
 
-```bash
-npm install -g tetris-cli
-tetris
-```
+> **Want it installed?** Run `npm install -g tetris-cli` then just type `tetris`.
 
-## Game Modes
+## 🕹️ What Is This?
 
-| Mode | Description |
-| --- | --- |
-| Marathon | Single-player score chase with increasing speed |
-| vs CPU | Battle an AI opponent with Easy, Normal, or Hard difficulty |
-| 2 Player | Same-keyboard versus mode with garbage attacks |
+A faithful recreation of **Tetris** — the puzzle game that defined a genre. Seven pieces, one board, infinite challenge. Built with TypeScript, React, and Ink for smooth 60 FPS terminal rendering.
 
-## Features
+## ✨ Features
 
-- 7-bag randomizer for fair piece distribution
-- SRS rotation and wall kicks
-- Hold piece, ghost piece, and next queue
-- T-Spin, combo, and back-to-back scoring
-- Multiplayer garbage sending and incoming garbage handling
-- Local marathon high scores in `~/.tetris-cli-scores.json`
-- Compact terminal layout with clear pause and game-over overlays
-- Optional terminal bell sound effects
+- 🏃 **Marathon** — Classic score chase with increasing speed
+- 🤖 **vs CPU** — Battle an AI opponent on Easy, Normal, or Hard
+- 👥 **2-Player** — Same-keyboard duel with garbage attacks
+- 🎲 **7-Bag Randomizer** — Fair piece distribution every game
+- 🔄 **SRS Rotation** — Full wall kicks and spin detection
+- 📦 **Hold Piece** — Swap and strategize
+- 👻 **Ghost Piece** — See exactly where you'll land
+- 🔥 **Combos & Back-to-Back** — Advanced scoring for pros
+- 🗑️ **Garbage System** — Send lines to your opponent
+- 🏆 **Local High Scores** — Persisted in `~/.tetris-cli-scores.json`
+- 🔔 **Sound Effects** — Terminal bell for game events (disable with `--no-sound`)
 
-## Controls
+## 🎮 Controls
 
 ### Player 1
 
 | Action | Keys |
-| --- | --- |
+|--------|------|
 | Move left | `A` / Left Arrow |
 | Move right | `D` / Right Arrow |
 | Soft drop | `S` / Down Arrow |
@@ -55,7 +88,7 @@ tetris
 ### Player 2
 
 | Action | Keys |
-| --- | --- |
+|--------|------|
 | Move left | Left Arrow |
 | Move right | Right Arrow |
 | Soft drop | Down Arrow |
@@ -63,98 +96,56 @@ tetris
 | Rotate clockwise | `,` / `.` |
 | Rotate counter-clockwise | `/` / `>` |
 | Hold | `;` / `L` |
-| Pause | `P` / Escape |
-| Quit | `Q` / Ctrl+C |
 
-## CLI Options
+## ⚙️ Options
 
 | Flag | Description | Default |
-| --- | --- | --- |
+|------|-------------|---------|
 | `--mode <mode>` | `marathon`, `cpu`, or `2p` | Interactive menu |
 | `--difficulty <level>` | `easy`, `normal`, or `hard` | `normal` |
-| `--no-sound` | Disable terminal bell sound effects | Sound enabled |
-| `--help`, `-h` | Show help | |
-| `--version`, `-v` | Show version | |
-
-Examples:
+| `--no-sound` | Disable terminal bell sounds | Sound enabled |
+| `--help`, `-h` | Show help | — |
+| `--version`, `-v` | Show version | — |
 
 ```bash
-npx tetris-cli
+# Examples
 npx tetris-cli --mode marathon --difficulty easy --no-sound
 npx tetris-cli --mode cpu --difficulty hard
 npx tetris-cli --mode 2p
 ```
 
-## Terminal Requirements
+## 💡 Pro Tips
 
-- Node.js 18 or newer
-- A terminal with ANSI color support
-- Recommended minimum size:
-  - Marathon: 80 x 24
-  - vs CPU / 2 Player: 100 x 24
+> 🎯 **Master the hold** — Save an I-piece for the perfect Tetris setup.
 
-If the terminal is too small, the game shows a resize prompt instead of clipping the board.
+> 🔄 **Learn SRS wall kicks** — A well-timed rotation can save a piece from a tight spot.
 
-## Development
+> ⚡ **Combos add up** — Clearing lines back-to-back sends massive garbage in versus modes.
+
+> 🏓 **Watch the ghost** — The ghost piece shows your landing spot. Use it to plan ahead.
+
+## 🛠️ Development
 
 ```bash
 git clone https://github.com/engelde/tetris-cli.git
 cd tetris-cli
 npm install
-npm test
-npm run build
 ```
-
-Common commands:
 
 | Command | Description |
-| --- | --- |
+|---------|-------------|
 | `npm start` | Run the game |
-| `npm run dev` | Build and run locally |
-| `npm test` | Run unit and Ink playthrough tests |
+| `npm test` | Run tests |
 | `npm run build` | Compile TypeScript |
-| `npm run lint` | Run Biome checks |
+| `npm run lint` | Lint with Biome |
 | `npm run format` | Format with Biome |
 
-## Project Structure
+[Husky](https://typicode.github.io/husky/) runs linting + tests on pre-commit and enforces [Conventional Commits](https://www.conventionalcommits.org/). CI runs on Node 18 / 20 / 22. Releases via [release-please](https://github.com/googleapis/release-please).
 
-```text
-src/
-  index.tsx          CLI entrypoint and mode routing
-  cli-args.ts        CLI argument parsing and help text
-  audio/             Terminal sound effects
-  components/        Ink UI components
-  config/            Colors and difficulty settings
-  game/              Engine, pieces, scoring, randomizer, AI, garbage
-  hooks/             Terminal/game loop hooks
-  input/             Key bindings
-  modes/             Marathon, vs CPU, and 2-player mode shells
-  test/              Manual visual render scripts
-  utils/             Constants and shared types
-test/                Automated unit, layout, and playthrough tests
-```
+## 📜 Credits
 
-## QA
+Inspired by the original **Tetris** created by **Alexey Pajitnov** in 1984. This is an independent, open-source recreation with no affiliation with The Tetris Company.
 
-The automated test suite covers:
+## 📄 License
 
-- Game engine state and hold behavior
-- Randomizer fairness and independent cursors
-- CPU move selection
-- Multiplayer garbage exchange
-- CLI argument validation
-- High-score persistence
-- Terminal layout invariants
-- Actual Ink playthrough smoke tests for Marathon, vs CPU, and 2 Player
-
-Run all checks before publishing:
-
-```bash
-npm run lint
-npm run build
-npm test
-```
-
-## License
-
-MIT
+[MIT](LICENSE)
