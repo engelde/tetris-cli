@@ -20,8 +20,10 @@ export function useTerminalSize(): TerminalSize {
 		}
 
 		process.stdout.on("resize", onResize)
+		process.on("SIGWINCH", onResize)
 		return () => {
 			process.stdout.off("resize", onResize)
+			process.off("SIGWINCH", onResize)
 		}
 	}, [])
 
