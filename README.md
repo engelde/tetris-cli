@@ -113,7 +113,7 @@ npm install
 | `npm run lint` | Lint with Biome |
 | `npm run format` | Format with Biome |
 
-[Husky](https://typicode.github.io/husky/) runs linting + tests on pre-commit and enforces [Conventional Commits](https://www.conventionalcommits.org/). CI runs on Node 22 / 24. npm publishing is triggered from a published GitHub Release using trusted publishing and provenance.
+[Husky](https://typicode.github.io/husky/) runs linting + tests on pre-commit and enforces [Conventional Commits](https://www.conventionalcommits.org/). CI runs on Node 22 / 24. npm publishing is triggered from a published GitHub Release using `NPM_TOKEN` and provenance.
 
 ## 📜 Credits
 
