@@ -1,0 +1,73 @@
+{
+	"name": "@engelde/tetris-cli",
+	"version": "1.0.0",
+	"description": "A CLI recreation of Tetris — right in your terminal",
+	"type": "module",
+	"main": "dist/index.js",
+	"bin": {
+		"tetris": "bin/tetris.js",
+		"tetris-cli": "bin/tetris.js"
+	},
+	"scripts": {
+		"start": "node bin/tetris.js",
+		"clean": "node -e \"fs.rmSync('dist',{recursive:true,force:true})\"",
+		"build": "tsc",
+		"dev": "tsc && node bin/tetris.js",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"format": "biome format --write .",
+		"test": "tsx --test test/*.test.ts",
+		"test:watch": "tsx --test --watch test/*.test.ts",
+		"prepare": "husky",
+		"prepublishOnly": "npm run clean && npm run build"
+	},
+	"keywords": [
+		"tetris",
+		"cli",
+		"game",
+		"terminal",
+		"tetris-guideline",
+		"srs",
+		"multiplayer",
+		"retro",
+		"arcade"
+	],
+	"author": "David Engel",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/engelde/tetris-cli.git"
+	},
+	"homepage": "https://github.com/engelde/tetris-cli#readme",
+	"bugs": {
+		"url": "https://github.com/engelde/tetris-cli/issues"
+	},
+	"files": [
+		"assets/",
+		"bin/",
+		"dist/",
+		"README.md",
+		"LICENSE"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"engines": {
+		"node": ">=22.0.0"
+	},
+	"dependencies": {
+		"chalk": "^5.6.2",
+		"ink": "^7.0.1",
+		"react": "^19.2.5"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.4.9",
+		"@commitlint/cli": "^20.5.0",
+		"@commitlint/config-conventional": "^20.5.0",
+		"@types/react": "^19.2.14",
+		"husky": "^9.1.7",
+		"ink-testing-library": "^4.0.0",
+		"tsx": "^4.21.0",
+		"typescript": "^5.8.0"
+	}
+}

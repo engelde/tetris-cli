@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 284" role="img" aria-labelledby="title desc">
+  <title id="title">Tetris CLI ANSI logo</title>
+  <desc id="desc">A terminal-style TETRIS logo drawn with colored ANSI block characters.</desc>
+  <rect width="980" height="284" rx="22" fill="#091018" />
+  <rect x="18" y="18" width="944" height="248" rx="16" fill="#0d1620" stroke="#273647" stroke-width="2" />
+  <circle cx="42" cy="42" r="6" fill="#ff5c7a" />
+  <circle cx="62" cy="42" r="6" fill="#ffe15a" />
+  <circle cx="82" cy="42" r="6" fill="#4ade80" />
+  <g font-family="SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace" font-size="21" font-weight="800" letter-spacing="0" xml:space="preserve" style="white-space: pre">
+    <text x="490" y="84" text-anchor="middle" fill="#12dff3">████████╗███████╗████████╗██████╗&#160;██╗███████╗</text>
+    <text x="490" y="112" text-anchor="middle" fill="#ffe15a">╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝</text>
+    <text x="490" y="140" text-anchor="middle" fill="#b770ff">&#160;&#160;&#160;██║&#160;&#160;&#160;█████╗&#160;&#160;&#160;&#160;&#160;██║&#160;&#160;&#160;██████╔╝██║███████╗</text>
+    <text x="490" y="168" text-anchor="middle" fill="#4ade80">&#160;&#160;&#160;██║&#160;&#160;&#160;██╔══╝&#160;&#160;&#160;&#160;&#160;██║&#160;&#160;&#160;██╔══██╗██║╚════██║</text>
+    <text x="490" y="196" text-anchor="middle" fill="#ff5c7a">&#160;&#160;&#160;██║&#160;&#160;&#160;███████╗&#160;&#160;&#160;██║&#160;&#160;&#160;██║&#160;&#160;██║██║███████║</text>
+    <text x="490" y="224" text-anchor="middle" fill="#12dff3">&#160;&#160;&#160;╚═╝&#160;&#160;&#160;╚══════╝&#160;&#160;&#160;╚═╝&#160;&#160;&#160;╚═╝&#160;&#160;╚═╝╚═╝╚══════╝</text>
+  </g>
+  <text x="490" y="260" text-anchor="middle" fill="#6f7f8f" font-family="SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace" font-size="16" font-weight="700" letter-spacing="0" xml:space="preserve" style="white-space: pre">C&#160;L&#160;I&#160;&#160;&#160;E&#160;D&#160;I&#160;T&#160;I&#160;O&#160;N</text>
+</svg>
