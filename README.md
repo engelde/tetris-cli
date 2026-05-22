@@ -8,7 +8,7 @@
 [![license](https://img.shields.io/npm/l/%40engelde%2Ftetris-cli?color=black&style=flat-square)](LICENSE)
 [![node](https://img.shields.io/node/v/%40engelde%2Ftetris-cli?color=black&style=flat-square)](package.json)
 
-<img src="assets/gameplay.gif" alt="Tetris CLI gameplay running in a terminal" width="720" />
+<img src="assets/gameplay.gif" alt="Tetris CLI gameplay demo running in a terminal" width="760" />
 
 *"The classic puzzle game, rebuilt for the terminal."*
 
